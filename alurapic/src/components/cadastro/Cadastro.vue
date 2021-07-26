@@ -44,7 +44,7 @@
 import ImagemResponsiva from "../shared/imagem-responsiva/ImagemResponsiva.vue";
 import Botao from "../shared/botao/Botao.vue";
 import Foto from "../domain/foto/Foto";
-import FotoService from "../domain/foto/FotoService";
+import FotoService from "../../domain/foto/FotoService";
 
 export default {
   components: {
