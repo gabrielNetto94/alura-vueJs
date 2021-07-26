@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1 class="centralizado">{{ titulo }}</h1>
+    <p v-show="mensagem" class="centralizado">{{ mensagem }}</p>
 
     <!-- v-on:input pega o que é digitado e insere na variável filtro -->
     <input
@@ -41,9 +42,6 @@
         </meu-painel>
       </li>
     </ul>
-
-    <!--Outro componente sendo chamado e passando 2 props para ele  -->
-    <formulario-teste :prop1="teste1" :prop2="blabla"> </formulario-teste>
   </div>
 </template>
 
@@ -71,10 +69,7 @@ export default {
       //array vazio que será preenchido com os dados da api
       fotos: [],
       filtro: "",
-
-      //dados que serão enviado para o componente <teste>
-      teste1: "Meu formulário",
-      blabla: "Enviar Dados",
+      mensagem: "",
     };
   },
 
@@ -100,7 +95,32 @@ export default {
   //propriedade utlizada para os métodos que serão utilizados na interface
   methods: {
     removerFoto(foto) {
-      alert("Remover a foto " + foto.titulo);
+      this.resource
+        .delete({
+          id: foto._id,
+        })
+        .then(
+          () => {
+            //remove a foto do array
+            let indice = this.fotos.indexOf(foto);
+            this.fotos.splice(indice, 1);
+            this.mensagem = "Foto removida com sucesso!";
+          },
+          (err) => {
+            this.mensagem = "Não foi possível remover a foto";
+          }
+        );
+      // this.$http.delete(`v1/fotos/${foto._id}`).then(
+      //   () => {
+      //     //remove a foto do array
+      //     let indice = this.fotos.indexOf(foto);
+      //     this.fotos.splice(indice, 1);
+      //     this.mensagem = "Foto removida com sucesso!";
+      //   },
+      //   (err) => {
+      //     this.mensagem = "Não foi possível remover a foto";
+      //   }
+      // );
     },
     naoRemoverFoto() {
       alert("A foto não será removida! =)");
@@ -108,17 +128,24 @@ export default {
   },
   //quando criar o componente este método será executado
   created() {
-    //faz a request para o endereço
-    let promise = this.$http.get("http://localhost:3000/v1/fotos");
-
-    //quando terminar converte pra JSON
-    promise
+    this.resource = this.$resource("v1/fotos{/id}");
+    this.resource
+      .query()
       .then((res) => res.json())
-      //assim que converter para JSON coloca os elementro no array de fotos
       .then(
         (foto) => (this.fotos = foto),
         (err) => console.log(err)
-      ); //segundo parâmetro mostra o erro caso algo acontece
+      );
+
+    // let promise = this.$http.get("v1/fotos");
+    // //quando terminar converte pra JSON
+    // promise
+    //   .then((res) => res.json())
+    //   //assim que converter para JSON coloca os elementro no array de fotos
+    //   .then(
+    //     (foto) => (this.fotos = foto),
+    //     (err) => console.log(err)
+    //   ); //segundo parâmetro mostra o erro caso algo acontece
   },
 };
 </script>
