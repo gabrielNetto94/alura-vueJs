@@ -50,6 +50,7 @@ import Painel from "../shared/painel/Painel.vue";
 import ImagemResponsiva from "../shared/imagem-responsiva/ImagemResponsiva.vue";
 import Botao from "../shared/botao/Botao.vue";
 import transform from "../../directives/Transform";
+import FotoService from "../domain/foto/FotoService";
 
 export default {
   //seta os componentes que serão utilizados
@@ -95,47 +96,44 @@ export default {
   //propriedade utlizada para os métodos que serão utilizados na interface
   methods: {
     removerFoto(foto) {
-      this.resource
-        .delete({
-          id: foto._id,
-        })
-        .then(
-          () => {
-            //remove a foto do array
-            let indice = this.fotos.indexOf(foto);
-            this.fotos.splice(indice, 1);
-            this.mensagem = "Foto removida com sucesso!";
-          },
-          (err) => {
-            this.mensagem = "Não foi possível remover a foto";
-          }
-        );
-      // this.$http.delete(`v1/fotos/${foto._id}`).then(
-      //   () => {
-      //     //remove a foto do array
-      //     let indice = this.fotos.indexOf(foto);
-      //     this.fotos.splice(indice, 1);
-      //     this.mensagem = "Foto removida com sucesso!";
-      //   },
-      //   (err) => {
-      //     this.mensagem = "Não foi possível remover a foto";
-      //   }
-      // );
+      this.service.deletar(foto._id).then(
+        () => {
+          //remove a foto do array
+          let indice = this.fotos.indexOf(foto);
+          this.fotos.splice(indice, 1);
+          this.mensagem = "Foto removida com sucesso!";
+        },
+        (err) => {
+          this.mensagem = "Não foi possível remover a foto";
+        }
+      );
     },
+    // this.$http.delete(`v1/fotos/${foto._id}`).then(
+    //   () => {
+    //     //remove a foto do array
+    //     let indice = this.fotos.indexOf(foto);
+    //     this.fotos.splice(indice, 1);
+    //     this.mensagem = "Foto removida com sucesso!";
+    //   },
+    //   (err) => {
+    //     this.mensagem = "Não foi possível remover a foto";
+    //   }
+    // );
+
+    //método para teste do botão remover
     naoRemoverFoto() {
       alert("A foto não será removida! =)");
     },
   },
   //quando criar o componente este método será executado
   created() {
-    this.resource = this.$resource("v1/fotos{/id}");
-    this.resource
-      .query()
-      .then((res) => res.json())
-      .then(
-        (foto) => (this.fotos = foto),
-        (err) => console.log(err)
-      );
+    //instancia o serviço
+    this.service = new FotoService(this.$resource);
+
+    this.service.listar().then(
+      (foto) => (this.fotos = foto),
+      (err) => console.log(err)
+    );
 
     // let promise = this.$http.get("v1/fotos");
     // //quando terminar converte pra JSON
