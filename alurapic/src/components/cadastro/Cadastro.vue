@@ -17,7 +17,7 @@
       </div>
 
       <div class="controle">
-        <label for="descricao">DESCRIÇÃO</label>
+        <label for="descricao"> DESCRIÇÃO</label>
         <textarea
           id="descricao"
           autocomplete="off"
