@@ -13,11 +13,15 @@
       <div class="controle">
         <label for="url">URL</label>
         <input id="url" autocomplete="off" v-model.lazy="foto.url" />
-        <imagem-responsiva v-show="foto.url" :url="foto.url" :titulo="foto.titulo"/>
+        <imagem-responsiva
+          v-show="foto.url"
+          :url="foto.url"
+          :titulo="foto.titulo"
+        />
       </div>
 
       <div class="controle">
-        <label for="descricao"> DESCRIÇÃO</label>
+        <label for="descricao">DESCRIÇÃO</label>
         <textarea
           id="descricao"
           autocomplete="off"
@@ -39,6 +43,7 @@
 <script>
 import ImagemResponsiva from "../shared/imagem-responsiva/ImagemResponsiva.vue";
 import Botao from "../shared/botao/Botao.vue";
+import Foto from "../domain/foto/Foto";
 
 export default {
   components: {
@@ -47,25 +52,27 @@ export default {
   },
   data() {
     return {
-      foto: {
-        titulo: "",
-        url: "",
-        descricao: "",
-      },
+      foto: new Foto(),
     };
   },
 
   methods: {
     gravar() {
-      // duas maneiras de limpar os campos do formulário, setar os campos para '' ou um reset do JS puro
-      //document.querySelector("#form").reset();
-
-      this.foto = {
-        titulo: "",
-        url: "",
-        descricao: "",
-      };
+    
+      this.resource.save(this.foto).then(
+        //1º param se retorno OK, limpa o formulário
+        () => {
+          this.foto = new Foto();
+        },
+        //2º param caso dê erro
+        (err) => console.log(err)
+      );
     },
+  },
+
+  created() {
+    //configuração do resource
+    this.resource = this.$resource("v1/fotos");
   },
 };
 </script>
