@@ -30,6 +30,10 @@
 
           <!--Não precisa fazer bind pq está passando o valor direto pro componente -->
           <!-- no evento @click adicionar o .native para chamar o evento nativo do componente que no caso é o button  -->
+          <router-link :to="{ name: 'alterar', params: { id: foto._id } }">
+            <meu-botao tipo="button" rotulo="Alterar" />
+          </router-link>
+
           <meu-botao
             tipo="button"
             rotulo="Remover"

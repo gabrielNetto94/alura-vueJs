@@ -20,7 +20,8 @@ export default {
   },
   data() {
     return {
-      routes,
+      //filtra as rotas que são menu, removendo por exemplo a rota default da aplicação
+      routes: routes.filter(route => route.menu)
     };
   },
 };

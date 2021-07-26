@@ -32,7 +32,8 @@
       <div class="centralizado">
         <meu-botao rotulo="GRAVAR" tipo="submit" />
 
-        <router-link to="/">
+        <!-- Ao invés de navegar pelo caminho absoluto da rota, nevagar pelo name -->
+        <router-link :to="{ name: 'home' }">
           <meu-botao rotulo="VOLTAR" tipo="button" />
         </router-link>
       </div>
@@ -43,7 +44,7 @@
 <script>
 import ImagemResponsiva from "../shared/imagem-responsiva/ImagemResponsiva.vue";
 import Botao from "../shared/botao/Botao.vue";
-import Foto from "../domain/foto/Foto";
+import Foto from "../../domain/foto/Foto";
 import FotoService from "../../domain/foto/FotoService";
 
 export default {
@@ -54,6 +55,8 @@ export default {
   data() {
     return {
       foto: new Foto(),
+      //pega o id passado pela rota
+      id: this.$route.params.id,
     };
   },
 
@@ -72,6 +75,11 @@ export default {
 
   created() {
     this.service = new FotoService(this.$resource);
+
+    //se o parâmetro foi passado pela rota, busca o item na api e seta os valor nos campos
+    if (this.id) {
+      this.service.buscar(this.id).then(foto => this.foto = foto);
+    }
   },
 };
 </script>
