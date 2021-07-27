@@ -108,7 +108,7 @@ export default {
           this.mensagem = "Foto removida com sucesso!";
         },
         (err) => {
-          this.mensagem = "Não foi possível remover a foto";
+          this.mensagem = err.message;
         }
       );
     },
@@ -136,7 +136,10 @@ export default {
 
     this.service.listar().then(
       (foto) => (this.fotos = foto),
-      (err) => console.log(err)
+      (err) => {
+        //exibe a mensagem de erro disparada
+        this.mensagem = err.message;
+      }
     );
 
     // let promise = this.$http.get("v1/fotos");

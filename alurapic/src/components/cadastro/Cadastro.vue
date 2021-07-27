@@ -1,7 +1,11 @@
 <template>
   <div>
     <h1 class="centralizado">Cadastro</h1>
-    <h2 class="centralizado"></h2>
+
+    <!-- Se tiver exisitr _id significa que é alteração e exibe -->
+    <h2 v-if="foto._id" class="centralizado">Alterando</h2>
+    <!-- Se não tiver id exibe esta tag -->
+    <h2 v-else class="centralizado">Incluindo</h2>
 
     <!--prevent default do Vue-->
     <form id="form" @submit.prevent="gravar()">
@@ -14,6 +18,7 @@
         <label for="url">URL</label>
         <input id="url" autocomplete="off" v-model.lazy="foto.url" />
         <imagem-responsiva
+          class="imagem-reduzida"
           v-show="foto.url"
           :url="foto.url"
           :titulo="foto.titulo"
@@ -63,8 +68,9 @@ export default {
   methods: {
     gravar() {
       this.service.cadastrar(this.foto).then(
-        //1º param se retorno OK, limpa o formulário
         () => {
+          //se tiver id da foto é alteração, concluir alteração e redireciona para home
+          if (this.id) this.$router.push({ name: "home" });
           this.foto = new Foto();
         },
         //2º param caso dê erro
@@ -78,7 +84,7 @@ export default {
 
     //se o parâmetro foi passado pela rota, busca o item na api e seta os valor nos campos
     if (this.id) {
-      this.service.buscar(this.id).then(foto => this.foto = foto);
+      this.service.buscar(this.id).then((foto) => (this.foto = foto));
     }
   },
 };
@@ -106,5 +112,10 @@ export default {
 
 .centralizado {
   text-align: center;
+}
+
+.imagem-reduzida {
+  width: 20%;
+  height: 20%;
 }
 </style>
