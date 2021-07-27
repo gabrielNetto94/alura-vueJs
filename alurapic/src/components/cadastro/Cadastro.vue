@@ -11,27 +11,54 @@
     <form id="form" @submit.prevent="gravar()">
       <div class="controle">
         <label for="titulo">TÍTULO</label>
-        <input id="titulo" autocomplete="off" v-model="foto.titulo" />
+        <input
+          data-vv-as="Título"
+          name="titulo"
+          v-validate
+          data-vv-rules="required|min:3|max:30"
+          id="titulo"
+          autocomplete="off"
+          v-model="foto.titulo"
+        />
+        <span v-show="errors.has('titulo')" class="erro">{{
+          errors.first("titulo")
+        }}</span>
       </div>
       <!-- Utilização do two-way data binding v-model -->
       <div class="controle">
         <label for="url">URL</label>
-        <input id="url" autocomplete="off" v-model.lazy="foto.url" />
+        <input
+          name="url"
+          v-validate
+          data-vv-rules="required"
+          id="url"
+          autocomplete="off"
+          v-model="foto.url"
+        />
         <imagem-responsiva
           class="imagem-reduzida"
           v-show="foto.url"
           :url="foto.url"
           :titulo="foto.titulo"
         />
+        <span v-show="errors.has('url')" class="erro">{{
+          errors.first("url")
+        }}</span>
       </div>
 
       <div class="controle">
         <label for="descricao">DESCRIÇÃO</label>
         <textarea
+          name="descricao"
+          v-validate
+          data-vv-rules="required"
           id="descricao"
           autocomplete="off"
           v-model="foto.descricao"
         ></textarea>
+        <span v-show="errors.has('descricao')" class="erro">{{
+          errors.first("descricao")
+        }}</span>
       </div>
 
       <div class="centralizado">
@@ -67,15 +94,21 @@ export default {
 
   methods: {
     gravar() {
-      this.service.cadastrar(this.foto).then(
-        () => {
-          //se tiver id da foto é alteração, concluir alteração e redireciona para home
-          if (this.id) this.$router.push({ name: "home" });
-          this.foto = new Foto();
-        },
-        //2º param caso dê erro
-        (err) => console.log(err)
-      );
+      //chama o $validator que é do módulo vee-validate e valida se o formulário está validado
+      this.$validator.validateAll().then((success) => {
+        //se sucesso na validação insere a foto
+        if (success) {
+          this.service.cadastrar(this.foto).then(
+            () => {
+              //se tiver id da foto é alteração, concluir alteração e redireciona para home
+              if (this.id) this.$router.push({ name: "home" });
+              this.foto = new Foto();
+            },
+            //2º param caso dê erro
+            (err) => console.log(err)
+          );
+        }
+      });
     },
   },
 
@@ -117,5 +150,9 @@ export default {
 .imagem-reduzida {
   width: 20%;
   height: 20%;
+}
+
+.erro {
+  color: red;
 }
 </style>
