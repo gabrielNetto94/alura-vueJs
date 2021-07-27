@@ -1,5 +1,7 @@
 <template>
   <div>
+    <!-- Carregamento de imagens é feito a partir da pasta static -->
+    <!-- <img src="/static/image.png"/> -->
     <h1 class="centralizado">{{ titulo }}</h1>
     <p v-show="mensagem" class="centralizado">{{ mensagem }}</p>
 
