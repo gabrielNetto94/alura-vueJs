@@ -12,11 +12,15 @@ import VeeValidate from 'vee-validate';
 //importação do arquivo de mensagens em português do vee validate
 import msg from './pt_BR';
 import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/js/bootstrap.js';
 
-//importação de arquivos criados
+//importação de arquivos js e css globais
 import './assets/css/teste.css';
+import './assets/js/teste.js';
+
 Vue.use(VueResource);
-Vue.http.options.root = 'http://localhost:3000';
+//se a variável não estiver setada, utilizar a localhost
+Vue.http.options.root = process.env.API_URL ? process.env.API_URL : 'http://localhost:3000';
 
 Vue.use(VueRouter);
 
